@@ -23,6 +23,10 @@ jobs:
     - name: Create .env file
       run: |
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+        echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> .env
+        echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+        echo "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" >> .env
+        
     
     # Cache pip dependencies
     - name: Cache pip dependencies
