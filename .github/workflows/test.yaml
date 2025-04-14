@@ -56,16 +56,16 @@ jobs:
     - name: Build and run Docker container
       run: |
         docker build -t test-planet-api .
-        docker run -d -p 8000:8000 test-planet-api
+        docker --name test-container run -d -p 8000:8000 test-planet-api
     
-    - name: List running Docker containers
+    - name: List file structure
       run: |
-        docker ps -a
+        docker exec test-container find /
 
 
     # Run Schemathesis tests
     - name: Run Schemathesis tests
-      uses: schemathesis/action@v1
+      uses: schemathesis/action@v3
       with:
         schema: "http://0.0.0.0:8000/api/schema/"
         base-url: "http://0.0.0.0:8000"
