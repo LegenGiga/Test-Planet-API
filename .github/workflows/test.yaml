@@ -56,7 +56,21 @@ jobs:
     - name: Build and run Docker container
       run: |
         docker build -t test-planet-api .
-        docker run --name test-container -d -p 8000:8000 test-planet-api
+        docker run -d -p 8000:8000 test-planet-api
+
+    - name: Wait for API to be ready
+      run: |
+        MAX_RETRIES=12
+        COUNT=0
+        until curl -s http://0.0.0.0:8000/api/schema/; do
+          echo "Waiting for API..."
+          sleep 5
+          COUNT=$((COUNT + 1))
+          if [ $COUNT -ge $MAX_RETRIES ]; then
+            echo "API did not become ready in time. Exiting."
+            exit 1
+          fi
+        done
 
 
     # Run Schemathesis tests
@@ -64,4 +78,4 @@ jobs:
       uses: schemathesis/action@v1
       with:
         schema: "http://0.0.0.0:8000/api/schema/"
-        base-url: "http:/0.0.0.0:8000"
+        base-url: "http://0.0.0.0:8000"
