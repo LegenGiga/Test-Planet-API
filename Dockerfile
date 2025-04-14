@@ -8,6 +8,9 @@ ENV PYTHONUNBUFFERED 1
 # Set the working directory in the container
 WORKDIR /app
 
+# Install system dependencies
+RUN apk update && apk add --no-cache gcc musl-dev libffi-dev postgresql-dev
+
 # Copy the requirements file into the container
 COPY requirements.txt /app/
 
