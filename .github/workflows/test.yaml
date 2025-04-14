@@ -60,7 +60,7 @@ jobs:
 
     - name: Wait for API to be ready
       run: |
-        MAX_RETRIES=12
+        MAX_RETRIES=5
         COUNT=0
         until curl -s http://localhost:8000/api/schema/; do
           echo "Waiting for API..."
