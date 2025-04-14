@@ -23,6 +23,7 @@ jobs:
 
     - name: Create .env file
       run: |
+        echo "DEBUG=true" >> .env
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
         echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> .env
         echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
@@ -38,11 +39,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-
     
-    # Install dependencies
-    - name: Install dependencies
+    # Setup the project
+    - name: Setup project
       run: |
-        python -m pip install --upgrade pip
         pip install --no-cache-dir -r requirements.txt
+        python manage.py migrate
 
     # Create the schema file if it doesn't exist
     - name: Create schema file if not created
@@ -52,19 +53,12 @@ jobs:
         else
           echo "Schema file exists."
         fi
-    
-    # Run the project
-    - name: Run project
-      run: |
-        python manage.py migrate
-        python manage.py runserver 0.0.0.0:8000 &
-          sleep 10  
 
-    #- name: Build and run Docker container
-    #  run: |
-    #    docker build -t test-planet-api .
-    #    docker run --name test --env-file .env -d -p 8000:8000 test-planet-api
-    
+    - name: Build and run Docker container
+      run: |
+        docker build -t test-planet-api .
+        docker run --name test --env-file .env -d -p 8000:8000 test-planet-api
+
     # Run Schemathesis tests
     - name: Run Schemathesis tests
       uses: schemathesis/action@v1
