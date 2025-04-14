@@ -56,13 +56,16 @@ jobs:
     - name: Build and run Docker container
       run: |
         docker build -t test-planet-api .
-        docker run --name test -d -p 8000:8000 test-planet-api
+        docker run --name test --env-file .env -d -p 8000:8000 test-planet-api
     
     - name: List containers
       run: docker ps -a
 
     - name: Check Docker logs
       run: docker logs test
+    
+    - name: Debug API accessibility
+      run: curl -v http://localhost:8000/api/health/
     
     - name: List files in the container
       run: docker exec test ls -R /app
