@@ -46,14 +46,11 @@ jobs:
         pip install --no-cache-dir -r requirements.txt
         python manage.py migrate
 
-    # Create the schema file if it doesn't exist
-    - name: Create schema file if not created
+    # Create or overrides the schema file
+    - name: Create schema file
       run: |
-        if [ ! -f "./schema.yaml" ]; then
-          python manage.py spectacular --color --file schema.yaml
-        else
-          echo "Schema file exists."
-        fi
+        python manage.py spectacular --color --file schema.yaml
+        
     # Generate API key
     - name: Generate API key
       id: generate_key

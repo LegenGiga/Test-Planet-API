@@ -1,7 +1,8 @@
 openapi: 3.0.3
 info:
-  title: ''
-  version: 0.0.0
+  title: Your API
+  version: 1.0.0
+  description: API for managing planets
 paths:
   /api/schema/:
     get:
@@ -128,6 +129,7 @@ paths:
       security:
       - cookieAuth: []
       - basicAuth: []
+      - ApiKeyAuth: []
       - {}
       responses:
         '200':
@@ -157,6 +159,7 @@ paths:
       security:
       - cookieAuth: []
       - basicAuth: []
+      - ApiKeyAuth: []
       responses:
         '200':
           content:
@@ -174,17 +177,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Planet'
+              $ref: '#/components/schemas/PlanetRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Planet'
+              $ref: '#/components/schemas/PlanetRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Planet'
+              $ref: '#/components/schemas/PlanetRequest'
         required: true
       security:
       - cookieAuth: []
       - basicAuth: []
+      - ApiKeyAuth: []
       responses:
         '201':
           content:
@@ -207,6 +211,7 @@ paths:
       security:
       - cookieAuth: []
       - basicAuth: []
+      - ApiKeyAuth: []
       responses:
         '200':
           content:
@@ -229,17 +234,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Planet'
+              $ref: '#/components/schemas/PlanetRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Planet'
+              $ref: '#/components/schemas/PlanetRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Planet'
+              $ref: '#/components/schemas/PlanetRequest'
         required: true
       security:
       - cookieAuth: []
       - basicAuth: []
+      - ApiKeyAuth: []
       responses:
         '200':
           content:
@@ -262,16 +268,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedPlanet'
+              $ref: '#/components/schemas/PatchedPlanetRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedPlanet'
+              $ref: '#/components/schemas/PatchedPlanetRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedPlanet'
+              $ref: '#/components/schemas/PatchedPlanetRequest'
       security:
       - cookieAuth: []
       - basicAuth: []
+      - ApiKeyAuth: []
       responses:
         '200':
           content:
@@ -293,19 +300,18 @@ paths:
       security:
       - cookieAuth: []
       - basicAuth: []
+      - ApiKeyAuth: []
       responses:
         '204':
           description: No response body
 components:
   schemas:
-    PatchedPlanet:
+    PatchedPlanetRequest:
       type: object
       properties:
-        id:
-          type: integer
-          readOnly: true
         name:
           type: string
+          minLength: 1
           maxLength: 63
         radius:
           type: integer
@@ -338,10 +344,34 @@ components:
           format: int64
       required:
       - distance
-      - id
+      - name
+      - radius
+    PlanetRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 63
+        radius:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        distance:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - distance
       - name
       - radius
   securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
     basicAuth:
       type: http
       scheme: basic
