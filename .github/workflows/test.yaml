@@ -82,4 +82,4 @@ jobs:
       with:
         schema: "http://localhost:8000/api/schema/"
         base-url: "http://localhost:8000"
-        args: '-H Authorization: Api-Key ${{ steps.generate_key.outputs.api_key }}' 
+        args: '-H "Authorization: Api-Key ${{ steps.generate_key.outputs.api_key }}"' 
