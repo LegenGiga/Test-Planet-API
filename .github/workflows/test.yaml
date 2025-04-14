@@ -62,7 +62,7 @@ jobs:
       run: |
         MAX_RETRIES=12
         COUNT=0
-        until curl -s http://0.0.0.0:8000/api/schema/; do
+        until curl -s http://localhost:8000/api/schema/; do
           echo "Waiting for API..."
           sleep 5
           COUNT=$((COUNT + 1))
@@ -77,5 +77,5 @@ jobs:
     - name: Run Schemathesis tests
       uses: schemathesis/action@v1
       with:
-        schema: "http://0.0.0.0:8000/api/schema/"
-        base-url: "http://0.0.0.0:8000"
+        schema: "http://localhost:8000/api/schema/"
+        base-url: "http://localhost:8000"
