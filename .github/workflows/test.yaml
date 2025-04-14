@@ -23,7 +23,7 @@ jobs:
 
     - name: Create .env file
       run: |
-        echo "DEBUG=True" >> .env
+        echo "DEBUG=true" >> .env
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
         echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> .env
         echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
@@ -56,7 +56,21 @@ jobs:
         fi
 
     - name: Run server
-      run: python manage.py runserver 0.0.0.0:8000
+      run: |
+        python manage.py runserver 0.0.0.0:8000 &
+        MAX_RETRIES=5
+        COUNT=0
+        until curl -s http://0.0.0.0:8000/api/schema/; do
+          echo "Waiting for API..."
+          sleep 5
+          COUNT=$((COUNT + 1))
+          if [ $COUNT -ge $MAX_RETRIES ]; then
+            echo "API did not become ready in time. Exiting."
+            docker logs test
+            exit 1
+          fi
+        done
+
     
 
     # Run Schemathesis tests
