@@ -54,6 +54,11 @@ jobs:
         else
           echo "Schema file exists."
         fi
+    # Generate API key
+    - name: Generate API key
+      id: generate_key
+      run: |
+        python manage.py shell < tests\create_api_key.py
 
     - name: Run server and wait until done
       run: |
@@ -71,11 +76,10 @@ jobs:
           fi
         done
 
-    
-
     # Run Schemathesis tests
     - name: Run Schemathesis tests
       uses: schemathesis/action@v1
       with:
         schema: "http://localhost:8000/api/schema/"
         base-url: "http://localhost:8000"
+        args: '-H Authorization: Api-Key ${{ steps.generate_key.outputs.api_key }}' 
