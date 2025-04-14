@@ -20,13 +20,25 @@ jobs:
       with:
         python-version: "3.13.2"
     
+    # Cache pip dependencies
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
     # Setup the project
     - name: Setup project
       run: |
+        pip install --no-cache-dir -r requirements.txt
         python manage.py migrate
+
+    - name: Create .env file
+      run: |
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
 
-    
     # Create the schema file if it doesn't exist
     - name: Create schema file if not created
       run: |
