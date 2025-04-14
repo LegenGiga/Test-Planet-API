@@ -38,11 +38,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-
     
-    # Setup the project
-    - name: Setup project
+    # Install dependencies
+    - name: Install dependencies
       run: |
+        python -m pip install --upgrade pip
         pip install --no-cache-dir -r requirements.txt
-        python manage.py migrate
 
     # Create the schema file if it doesn't exist
     - name: Create schema file if not created
@@ -52,25 +52,19 @@ jobs:
         else
           echo "Schema file exists."
         fi
-
-    - name: Build and run Docker container
+    
+    # Run the project
+    - name: Run project
       run: |
-        docker build -t test-planet-api .
-        docker run --name test --env-file .env -d -p 8000:8000 test-planet-api
-    
-    - name: List containers
-      run: docker ps -a
+        python manage.py migrate
+        python manage.py runserver 0.0.0.0:8000 &
+          sleep 10  
 
-    - name: Check Docker logs
-      run: docker logs test
+    #- name: Build and run Docker container
+    #  run: |
+    #    docker build -t test-planet-api .
+    #    docker run --name test --env-file .env -d -p 8000:8000 test-planet-api
     
-    - name: Debug API accessibility
-      run: curl -v http://localhost:8000/api/health/
-    
-    - name: List files in the container
-      run: docker exec test ls -R /app
-
-
     # Run Schemathesis tests
     - name: Run Schemathesis tests
       uses: schemathesis/action@v1
