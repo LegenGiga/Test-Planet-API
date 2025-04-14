@@ -56,6 +56,14 @@ jobs:
       run: |
         docker build -t test-planet-api .
         docker run -d -p 8000:8000 test-planet-api
+    
+    - name: Wait for API to be ready
+      run: |
+        until curl -s http://localhost:8000/api/health/; do
+          echo "Waiting for API..."
+          sleep 5
+        done
+
 
     # Run Schemathesis tests
     - name: Run Schemathesis tests
