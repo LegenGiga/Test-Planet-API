@@ -23,7 +23,7 @@ jobs:
 
     - name: Create .env file
       run: |
-        echo "DEBUG=true" >> .env
+        echo "DEBUG=True" >> .env
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
         echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> .env
         echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
@@ -42,6 +42,7 @@ jobs:
     # Setup the project
     - name: Setup project
       run: |
+        pip install --upgrade pip
         pip install --no-cache-dir -r requirements.txt
         python manage.py migrate
 
@@ -54,14 +55,13 @@ jobs:
           echo "Schema file exists."
         fi
 
-    - name: Build and run Docker container
-      run: |
-        docker build -t test-planet-api .
-        docker run --name test --env-file .env -d -p 8000:8000 test-planet-api
+    - name: Run server
+      run: python manage.py runserver 0.0.0.0:8000
+    
 
     # Run Schemathesis tests
     - name: Run Schemathesis tests
       uses: schemathesis/action@v1
       with:
-        schema: "http://localhost:8000/api/schema/"
-        base-url: "http://localhost:8000"
+        schema: "http://0.0.0.0:8000/api/schema/"
+        base-url: "http://0.0.0.0:8000"
