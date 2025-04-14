@@ -56,7 +56,7 @@ jobs:
     - name: Build and run Docker container
       run: |
         docker build -t test-planet-api .
-        docker run --name test-container run -d -p 8000:8000 test-planet-api
+        docker run --name test-container -d -p 8000:8000 test-planet-api
     
     - name: List file structure
       run: |
