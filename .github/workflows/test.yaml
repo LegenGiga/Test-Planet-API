@@ -58,7 +58,7 @@ jobs:
     - name: Generate API key
       id: generate_key
       run: |
-        python manage.py shell < tests\create_api_key.py
+        python manage.py shell < tests/create_api_key.py
 
     - name: Run server and wait until done
       run: |
