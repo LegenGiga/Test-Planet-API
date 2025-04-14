@@ -65,7 +65,7 @@ jobs:
 
     # Run Schemathesis tests
     - name: Run Schemathesis tests
-      uses: schemathesis/action@v3
+      uses: schemathesis/action@v1
       with:
         schema: "http://0.0.0.0:8000/api/schema/"
         base-url: "http://0.0.0.0:8000"
