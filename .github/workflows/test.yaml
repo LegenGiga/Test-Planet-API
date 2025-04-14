@@ -9,6 +9,7 @@ on:
 jobs:
   test-endpoints:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
     # Checkout the repository
     - name: Checkout code
@@ -59,7 +60,7 @@ jobs:
     
     - name: Wait for API to be ready
       run: |
-        until curl -s http://localhost:8000/api/health/; do
+        until curl -s http://0.0.0.0:8000/api/health/; do
           echo "Waiting for API..."
           sleep 5
         done
@@ -69,4 +70,5 @@ jobs:
     - name: Run Schemathesis tests
       uses: schemathesis/action@v1
       with:
-        schema: "http://localhost:8000/api/schema/"
+        schema: "http://0.0.0.0:8000/api/schema/"
+        base-url: "http://0.0.0.0:8000"
